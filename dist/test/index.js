@@ -1,0 +1,23 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const index_1 = require("../lib/index");
+const js = JSON.stringify;
+let file = 'a.file';
+let a = Buffer.from([0x00, 0x01]);
+console.log(`a = Buffer.from([0x00, 0x01]) : ${js(a)}`);
+a.result = (0, index_1.write)(file, a);
+console.log(`write(${file}', a) : ${js(a.result)}`);
+a.result = (0, index_1.read)(file);
+console.log(`read('${file}') : ${js(a.result)}`);
+a = a.result;
+file = 'b.file';
+let b = Buffer.from([0x02, 0x03]);
+console.log(`b = Buffer.from([0x02, 0x03]) : ${js(b)}`);
+b.result = (0, index_1.write)(file, b);
+console.log(`write(${file}', b) : ${js(b.result)}`);
+b.result = (0, index_1.read)(file);
+console.log(`read('${file}') : ${js(b.result)}`);
+b = b.result;
+const ab = (0, index_1.append)(a, b);
+console.log(`ab = append(a, b) : ${js(ab)}`);
+//# sourceMappingURL=index.js.map
