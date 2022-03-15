@@ -1,0 +1,35 @@
+name: Build and Test
+on: 
+  workflow_dispatch:
+  push:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+     matrix:
+      yarn: 
+        - 'yarn build:tsc:clean'
+    steps:
+    - uses: actions/setup-node@v2
+      with:
+        node-version: 'lts/*'
+    - uses: actions/checkout@master
+    - id: node-cache
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ github.repository }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ github.repository }}-node-modules-
+    - if: steps.node-cache.outputs.cache-hit != 'true'
+      run: yarn install
+    - run: |
+       ${{ matrix.yarn }}
+    - uses: corcc/publish@master
+      if: ${{ contains(matrix.yarn, 'build') }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TASK_NAME: 🔧
+        TIMEZONE: 'Asia/Tokyo'
